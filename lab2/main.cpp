@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-volatile sig_atomic_t wasSigHup = 0;
+sig_atomic_t wasSigHup = 0;
 
 void handleSigHup(int signal)
 {

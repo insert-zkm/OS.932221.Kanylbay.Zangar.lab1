@@ -98,7 +98,7 @@ int main() {
             }
         }
 
-        for (auto iter = clientSockets.begin(); i != clientSockets.end();) {
+        for (auto iter = clientSockets.begin(); iter != clientSockets.end();) {
             int clientFd = *iter;
             if (FD_ISSET(clientFd, &descriptorSet)) {
                 char buffer[1024];

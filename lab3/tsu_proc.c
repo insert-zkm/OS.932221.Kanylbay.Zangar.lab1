@@ -4,6 +4,9 @@
 #include <linux/version.h>
 #include <linux/proc_fs.h>
 #include <linux/uaccess.h>
+#include <linux/timekeeping.h>
+#include <linux/time64.h>
+
 
 #define PROCFS_NAME "tsu_proc"
 
@@ -59,8 +62,21 @@ static ssize_t procfile_read(struct file *file_pointer,
 	t_sec = (u32)(t_ms / 1000ULL);
 	t_min = t_sec / 60U;
 
+	time64_t now = ktime_get_real_seconds();
+	pr_info("now=%lld\n", (long long)now);
+    time64_t impact = now + t_sec;
+
+    struct tm tm_impact;
+    time64_to_tm(impact, 0, &tm_impact);
+
 	len = scnprintf(s, sizeof(s),
-					"Hubble fall time: %u minutes\n", t_min);
+        "Impact (UTC): %04ld-%02d-%02d %02d:%02d:%02d\n",
+        (long)(tm_impact.tm_year + 1900),
+        tm_impact.tm_mon + 1,
+        tm_impact.tm_mday,
+        tm_impact.tm_hour,
+        tm_impact.tm_min,
+        tm_impact.tm_sec);
 
 	if (buffer_length < len)
 		return -EINVAL;
